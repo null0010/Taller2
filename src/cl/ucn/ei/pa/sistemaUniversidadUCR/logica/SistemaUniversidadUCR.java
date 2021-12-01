@@ -90,6 +90,6 @@ public interface SistemaUniversidadUCR {
 
     boolean isVacaciones(String fecha);
 
-    String obtenerDatosAsignaturasInscribibleEstudiante(String correoEstudiante);
+    String obtenerDatosAsignaturasInscribiblesEstudiante(String correoEstudiante);
 
 }

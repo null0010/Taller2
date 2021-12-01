@@ -1,0 +1,6 @@
+1285, termodinámica, 8, obligatoria, 2, 3, 1284, 1085, 9450
+1286, belga, 4, opcional, 14
+1458, calculo I, 4, obligatoria, 1, 0
+1523, calculo II, 4, obligatoria, 2, 1, 1458
+1211, algebra, 4, obligatoria, 2, 0
+1428, fisica, 4, obligatoria, 1, 0

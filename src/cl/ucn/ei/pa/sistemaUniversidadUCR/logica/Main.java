@@ -69,16 +69,43 @@ public class Main {
         }
 
         if (sistema.isInicioSemestre(fecha)) {
-
+            ejecutarOpcionesInicioSemestre(sistema, input);
         }
         else if (sistema.isMitadSemestre(fecha)) {
-            
+
         }
         else if (sistema.isVacaciones(fecha)) {
             System.out.println("“Disfrute sus vacaciones.");
         }
         else {
             System.out.println("No hay acciones disponibles.");
+        }
+    }
+
+    private static void ejecutarOpcionesInicioSemestre(SistemaUniversidadUCR sistema, Scanner input) {
+        boolean isCerrarSistema = false;
+        while (!isCerrarSistema) {
+            System.out.println("[1] Inscribir asignatura");
+            System.out.println("[2] Eliminar de asignaturas");
+            System.out.println("[3] Cerrar sistema");
+            System.out.print("Ingrese una opción: ");
+            int opcion = input.nextInt();
+            switch (opcion) {
+                case 1:
+                    //sistema.asociarAsignaturaInscritaEstudiante();
+                    break;
+
+                case 2:
+                    break;
+
+                case 3:
+                    isCerrarSistema = true;
+                    break;
+
+                default:
+                    System.out.println("Opcion fuera de rango.");
+                    break;
+            }
         }
     }
 

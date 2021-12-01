@@ -38,7 +38,7 @@ public class Main {
                             //ejecutarMenuProfesor(sistema);
                         }
                         else {
-                            ejecutarMenuEstudiante(sistema, input);
+                            ejecutarMenuEstudiante(sistema, input, correo);
                         }
 
                         isEjecutandoAplicacion = false;
@@ -59,7 +59,7 @@ public class Main {
         }
     }
 
-    private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input) {
+    private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
         System.out.print("Ingrese una fecha [00/00/0000]: ");
         String fecha = obtenerFechaFormateada(input.next());
         while (fecha.equals("")) {
@@ -69,7 +69,7 @@ public class Main {
         }
 
         if (sistema.isInicioSemestre(fecha)) {
-            ejecutarOpcionesInicioSemestre(sistema, input);
+            ejecutarOpcionesInicioSemestre(sistema, input, correoEstudiante);
         }
         else if (sistema.isMitadSemestre(fecha)) {
 
@@ -82,7 +82,7 @@ public class Main {
         }
     }
 
-    private static void ejecutarOpcionesInicioSemestre(SistemaUniversidadUCR sistema, Scanner input) {
+    private static void ejecutarOpcionesInicioSemestre(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
         boolean isCerrarSistema = false;
         while (!isCerrarSistema) {
             System.out.println("[1] Inscribir asignatura");
@@ -92,7 +92,7 @@ public class Main {
             int opcion = input.nextInt();
             switch (opcion) {
                 case 1:
-                    //sistema.asociarAsignaturaInscritaEstudiante();
+                    System.out.println(sistema.obtenerDatosAsignaturasInscribiblesEstudiante(correoEstudiante));
                     break;
 
                 case 2:

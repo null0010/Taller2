@@ -11,7 +11,7 @@ public class Estudiante extends Usuario {
     public Estudiante(String rut, String correo, String contrasena, int nivel) {
         super(rut, correo, contrasena);
         this.nivel = nivel;
-        this.credito = 0;
+        this.credito = 40;
         this.listaAsignaturasInscritas = new ListaAsignaturas(1000);
         this.listaAsignaturasCursadas = new ListaAsignaturas(1000);
     }

@@ -133,4 +133,20 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         LocalDate fechaActual = LocalDate.parse(fecha);
         return fechaActual.isBefore(fechaInicio) && fechaActual.isAfter(fechaFinal);
     }
+
+    public String obtenerDatosAsignaturasInscribibleEstudiante(String correoEstudiante) {
+        String salida = "";
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        for (int i = 0; i < listaAsignaturas.getCantidad(); i++) {
+            Asignatura asignatura = listaAsignaturas.getAsignaturaI(i);
+            if (asignatura instanceof AsignaturaObligatoria) {
+                AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
+                if (estudiante.getNivel() <= asignaturaObligatoria.getNivel() && estudiante.getCredito() <= asignaturaObligatoria.getCreditos()) {
+                    salida += asignaturaObligatoria.getCodigo() + "\n";
+                }
+            }
+        }
+
+        return salida;
+    }
 }

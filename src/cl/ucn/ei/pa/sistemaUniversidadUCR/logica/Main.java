@@ -2,6 +2,7 @@ package cl.ucn.ei.pa.sistemaUniversidadUCR.logica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.SequenceInputStream;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class Main {
                             //ejecutarMenuProfesor(sistema);
                         }
                         else {
-                            //ejecutarMenuEstudiante
+                            ejecutarMenuEstudiante(sistema, input);
                         }
 
                         isEjecutandoAplicacion = false;
@@ -55,6 +56,29 @@ public class Main {
                 System.out.out.println("Correo y/o contraseña incorrectos.");
             }¨*/
 
+        }
+    }
+
+    private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input) {
+        System.out.print("Ingrese una fecha [00/00/0000]: ");
+        String fecha = obtenerFechaFormateada(input.next());
+        while (fecha.equals("")) {
+            System.out.println("Formato incorrecto!!");
+            System.out.print("Ingrese un fecha [00/00/0000]: ");
+            fecha = obtenerFechaFormateada(input.next());
+        }
+
+        if (sistema.isInicioSemestre(fecha)) {
+
+        }
+        else if (sistema.isMitadSemestre(fecha)) {
+            
+        }
+        else if (sistema.isVacaciones(fecha)) {
+            System.out.println("“Disfrute sus vacaciones.");
+        }
+        else {
+            System.out.println("No hay acciones disponibles.");
         }
     }
 

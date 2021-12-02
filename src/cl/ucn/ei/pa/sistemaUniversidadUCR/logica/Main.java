@@ -2,7 +2,6 @@ package cl.ucn.ei.pa.sistemaUniversidadUCR.logica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.SequenceInputStream;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -115,9 +114,11 @@ public class Main {
                         System.out.println();
                         String datosParalelos = sistema.obtenerDatosParalelosAsignatura(codigoAsignatura);
                         if (!datosParalelos.equals("")) {
+                            System.out.println(datosParalelos);
                             System.out.print("Ingrese el numero del paralelo: ");
                             int numeroParalelo = input.nextInt();
                             sistema.asociarAsignaturaInscritaEstudiante(codigoAsignatura, numeroParalelo, correoEstudiante);
+                            System.out.println("La asignatura ha sido inscrita exitosamente.");
                         }
                         else {
                             System.out.print("Todos los paralelos se encuentran llenos.");
@@ -132,6 +133,7 @@ public class Main {
                 case 2:
                     String datosAsignaturasInscritas = sistema.obtenerDatosAsignaturasInscritasEstudiante(correoEstudiante);
                     if (!datosAsignaturasInscritas.equals("")) {
+                        System.out.println(datosAsignaturasInscritas);
                         System.out.print("Ingrese el codigo de la asignatura: ");
                         int codigoAsignatura = input.nextInt();
                         boolean isEliminadaAsignatura = sistema.eliminarAsignaturaInscritaEstudiante(correoEstudiante, codigoAsignatura);
@@ -143,7 +145,7 @@ public class Main {
                         }
                     }
                     else {
-                        System.out.print("No tienes ninguna asignatura inscrita.");
+                        System.out.println("No tienes ninguna asignatura inscrita.");
                     }
 
                     break;
@@ -170,6 +172,7 @@ public class Main {
                 case 1:
                     String datosAsignaturasInscritas = sistema.obtenerDatosAsignaturasInscritasEstudiante(correoEstudiante);
                     if (!datosAsignaturasInscritas.equals("")) {
+                        System.out.println(datosAsignaturasInscritas);
                         System.out.print("Ingrese el codigo de la asignatura: ");
                         int codigoAsignatura = input.nextInt();
                         boolean isEliminadaAsignatura = sistema.eliminarAsignaturaInscritaEstudiante(correoEstudiante, codigoAsignatura);
@@ -181,7 +184,7 @@ public class Main {
                         }
                     }
                     else {
-                        System.out.print("No tienes ninguna asignatura inscrita.");
+                        System.out.println("No tienes ninguna asignatura inscrita.");
                     }
 
                     break;

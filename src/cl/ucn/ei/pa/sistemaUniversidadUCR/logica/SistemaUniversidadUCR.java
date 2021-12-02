@@ -92,4 +92,5 @@ public interface SistemaUniversidadUCR {
 
     String obtenerDatosAsignaturasInscribiblesEstudiante(String correoEstudiante);
 
+    String obtenerDatosParalelosAsignatura(int codigoAsignatura);
 }

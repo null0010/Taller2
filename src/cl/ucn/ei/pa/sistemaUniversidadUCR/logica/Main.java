@@ -115,6 +115,22 @@ public class Main {
                     break;
 
                 case 2:
+                    String datosAsignaturasInscritas = sistema.obtenerDatosAsignaturasInscritasEstudiante(correoEstudiante);
+                    if (!datosAsignaturasInscritas.equals("")) {
+                        System.out.print("Ingrese el codigo de la asignatura: ");
+                        int codigoAsignatura = input.nextInt();
+                        boolean isEliminadaAsignatura = sistema.eliminarAsignaturaInscritaEstudiante(correoEstudiante, codigoAsignatura);
+                        if (isEliminadaAsignatura) {
+                            System.out.println("La asignatura ha sido eliminada.");
+                        }
+                        else {
+                            System.out.println("La asignatura no pudo eliminadar.");
+                        }
+                    }
+                    else {
+                        System.out.print("No tienes ninguna asignatura inscrita.");
+                    }
+
                     break;
 
                 case 3:
@@ -122,7 +138,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Opcion fuera de rango.");
+                    System.out.println("Opción fuera de rango.");
                     break;
             }
         }

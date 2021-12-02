@@ -145,9 +145,10 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
                 AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
                 System.out.println(asignaturaObligatoria.getNombre() + ", " + asignaturaObligatoria.getNivel());
                 if (estudiante.getNivel() <= asignaturaObligatoria.getNivel() && estudiante.getCredito() >= asignaturaObligatoria.getCreditos()) {
-                    salida += "Codigo: " + asignaturaObligatoria.getCodigo()
+                    salida += asignaturaObligatoria.getCodigo()
+                            + "\n"
                             + asignaturaObligatoria.getNombre()
-                            +"\n";
+                            +"\n\n";
                 }
             }
         }
@@ -170,5 +171,25 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         }
 
         return salida;
+    }
+
+    public String obtenerDatosAsignaturasInscritasEstudiante(String correoEstudiante) {
+        String salida = "";
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        ListaAsignaturas listaAsignaturasInscritas = estudiante.getListaAsignaturasInscritas();
+        for (int i = 0; i < listaAsignaturasInscritas.getCantidad(); i++) {
+            Asignatura asignatura = listaAsignaturasInscritas.getAsignaturaI(i);
+            salida += asignatura.getCodigo()
+                    + "\n"
+                    + asignatura.getNombre()
+                    +"\n\n";
+        }
+
+        return salida;
+    }
+
+    public boolean eliminarAsignaturaInscritaEstudiante(String correoEstudiante, int codigoAsignatura) {
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        return estudiante.getListaAsignaturasInscritas().eliminarAsignatura(codigoAsignatura);
     }
 }

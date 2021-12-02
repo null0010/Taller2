@@ -35,7 +35,7 @@ public class Main {
                 if (sistema.isUsuarioRegistrado(correo)) {
                     if (sistema.isContraseñaCorrecta(correo, contrasena)) {
                         if (sistema.isUsuarioProfesor(correo)) {
-                            //ejecutarMenuProfesor(sistema);
+                            ejecutarMenuProfesor(sistema, input);
                         }
                         else {
                             ejecutarMenuEstudiante(sistema, input, correo);
@@ -59,6 +59,21 @@ public class Main {
         }
     }
 
+    private static void ejecutarMenuProfesor(SistemaUniversidadUCR sistema, Scanner input) {
+        System.out.print("Ingrese una fecha [00/00/0000]: ");
+        String fecha = obtenerFechaFormateada(input.next());
+        while (fecha.equals("")) {
+            System.out.println("Formato incorrecto!!");
+            System.out.print("Ingrese un fecha [00/00/0000]: ");
+            fecha = obtenerFechaFormateada(input.next());
+        }
+
+        if (sistema.isInicioSemestre(fecha)) {
+
+        }
+
+    }
+
     private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
         System.out.print("Ingrese una fecha [00/00/0000]: ");
         String fecha = obtenerFechaFormateada(input.next());
@@ -72,7 +87,7 @@ public class Main {
             ejecutarOpcionesInicioSemestre(sistema, input, correoEstudiante);
         }
         else if (sistema.isMitadSemestre(fecha)) {
-
+            ejecutarOpcionesMitadSemestre(sistema, input, correoEstudiante);
         }
         else if (sistema.isVacaciones(fecha)) {
             System.out.println("“Disfrute sus vacaciones.");
@@ -134,6 +149,44 @@ public class Main {
                     break;
 
                 case 3:
+                    isCerrarSistema = true;
+                    break;
+
+                default:
+                    System.out.println("Opción fuera de rango.");
+                    break;
+            }
+        }
+    }
+
+    private static void ejecutarOpcionesMitadSemestre(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
+        boolean isCerrarSistema = false;
+        while (!isCerrarSistema) {
+            System.out.println("[1] Elimar asignatura");
+            System.out.println("[2] Cerrar sistema");
+            System.out.print("Ingrese una opción: ");
+            int opcion = input.nextInt();
+            switch (opcion) {
+                case 1:
+                    String datosAsignaturasInscritas = sistema.obtenerDatosAsignaturasInscritasEstudiante(correoEstudiante);
+                    if (!datosAsignaturasInscritas.equals("")) {
+                        System.out.print("Ingrese el codigo de la asignatura: ");
+                        int codigoAsignatura = input.nextInt();
+                        boolean isEliminadaAsignatura = sistema.eliminarAsignaturaInscritaEstudiante(correoEstudiante, codigoAsignatura);
+                        if (isEliminadaAsignatura) {
+                            System.out.println("La asignatura ha sido eliminada.");
+                        }
+                        else {
+                            System.out.println("La asignatura no pudo eliminadar.");
+                        }
+                    }
+                    else {
+                        System.out.print("No tienes ninguna asignatura inscrita.");
+                    }
+
+                    break;
+
+                case 2:
                     isCerrarSistema = true;
                     break;
 

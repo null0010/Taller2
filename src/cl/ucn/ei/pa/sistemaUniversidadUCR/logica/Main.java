@@ -95,12 +95,18 @@ public class Main {
                     String datosAsignaturas = sistema.obtenerDatosAsignaturasInscribiblesEstudiante(correoEstudiante);
                     if (!datosAsignaturas.equals("")) {
                         System.out.println(datosAsignaturas);
-                        System.out.print("Escriba el codigo la asignatura: ");
+                        System.out.print("Ingrese el codigo de la asignatura: ");
                         int codigoAsignatura = input.nextInt();
                         System.out.println();
-                        System.out.println(sistema.obtenerDatosParalelosAsignatura(codigoAsignatura));
-
-                        //sistema.asociarAsignaturaInscritaEstudiante(codigoAsignatura, );
+                        String datosParalelos = sistema.obtenerDatosParalelosAsignatura(codigoAsignatura);
+                        if (!datosParalelos.equals("")) {
+                            System.out.print("Ingrese el numero del paralelo: ");
+                            int numeroParalelo = input.nextInt();
+                            sistema.asociarAsignaturaInscritaEstudiante(codigoAsignatura, numeroParalelo, correoEstudiante);
+                        }
+                        else {
+                            System.out.print("Todos los paralelos se encuentran llenos.");
+                        }
                     }
                     else {
                         System.out.print("Ninguna asignatura disponible.");

@@ -39,7 +39,8 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
 
     public boolean ingresarAsignaturaInscritaEstudiante(int codigoAsignatura, int numeroParalelo) {
         Paralelo paralelo = listaParalelos.buscarParalelo(numeroParalelo);
-        if (paralelo == null || listaAsignaturas.buscarAsignatura(codigoAsignatura) == null) {
+        Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
+        if (paralelo == null || asignatura == null) {
             throw new NullPointerException("El paralelo y/o la asignatura no existe.");
         }
 
@@ -47,12 +48,22 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         int indiceEstudiante = listaUsuarios.getCantidad() - 1;
         Estudiante estudiante = (Estudiante) listaUsuarios.getUsuarioI(indiceEstudiante);
         paralelo.getListaEstudiantes().agregarUsuario(estudiante);
-        paralelo.getListaAsignaturas().agregarAsignatura(asignaturaObligatoriaInscrita);//
+        paralelo.getListaAsignaturas().agregarAsignatura(asignaturaObligatoriaInscrita);
         return estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaObligatoriaInscrita);
     }
 
     public boolean asociarAsignaturaInscritaEstudiante(int codigoAsignatura, int numeroParalelo, String correoEstudiante) {
-        return false;
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        Paralelo paralelo = listaParalelos.buscarParalelo(numeroParalelo);
+        Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
+        if (asignatura == null || paralelo == null) {
+            throw new NullPointerException("La asignatura y/o paralelo no existen.");
+        }
+
+        AsignaturaObligatoria asignaturaInscrita = new AsignaturaObligatoria(codigoAsignatura);
+        asignaturaInscrita.getListaParalelos().agregarParalelo(paralelo);
+
+        return estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaInscrita);
     }
 
     public boolean ingresarAsignaturaObligatoria(int codigoAsignatura, String nombreAsignatura, int creditos, int nivel) {
@@ -87,7 +98,8 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
 
         asignatura.getListaParalelos().agregarParalelo(paralelo);
         paralelo.setProfesor(profesor);
-        return paralelo.getListaAsignaturas().agregarAsignatura(asignatura);
+        paralelo.getListaAsignaturas().agregarAsignatura(asignatura);
+        return listaParalelos.agregarParalelo(paralelo);
     }
 
     public boolean isUsuarioRegistrado(String correo) {
@@ -143,7 +155,6 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             Asignatura asignatura = listaAsignaturas.getAsignaturaI(i);
             if (asignatura instanceof AsignaturaObligatoria) {
                 AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
-                System.out.println(asignaturaObligatoria.getNombre() + ", " + asignaturaObligatoria.getNivel());
                 if (estudiante.getNivel() <= asignaturaObligatoria.getNivel() && estudiante.getCredito() >= asignaturaObligatoria.getCreditos()) {
                     salida += asignaturaObligatoria.getCodigo()
                             + "\n"
@@ -179,9 +190,10 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         ListaAsignaturas listaAsignaturasInscritas = estudiante.getListaAsignaturasInscritas();
         for (int i = 0; i < listaAsignaturasInscritas.getCantidad(); i++) {
             Asignatura asignatura = listaAsignaturasInscritas.getAsignaturaI(i);
-            salida += asignatura.getCodigo()
+            Asignatura asignaturaDescripcion = listaAsignaturas.buscarAsignatura(asignatura.getCodigo());
+            salida += asignaturaDescripcion.getCodigo()
                     + "\n"
-                    + asignatura.getNombre()
+                    + asignaturaDescripcion.getNombre()
                     +"\n\n";
         }
 

@@ -84,6 +84,8 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         if (asignatura == null  || profesor == null) {
             throw new NullPointerException("Asignatura y/o Profesor no existe.");
         }
+
+        asignatura.getListaParalelos().agregarParalelo(paralelo);
         paralelo.setProfesor(profesor);
         return paralelo.getListaAsignaturas().agregarAsignatura(asignatura);
     }
@@ -143,8 +145,27 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
                 AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
                 System.out.println(asignaturaObligatoria.getNombre() + ", " + asignaturaObligatoria.getNivel());
                 if (estudiante.getNivel() <= asignaturaObligatoria.getNivel() && estudiante.getCredito() >= asignaturaObligatoria.getCreditos()) {
-                    salida += asignaturaObligatoria.getCodigo() + "\n";
+                    salida += "Codigo: " + asignaturaObligatoria.getCodigo()
+                            + asignaturaObligatoria.getNombre()
+                            +"\n";
                 }
+            }
+        }
+
+        return salida;
+    }
+
+    public String obtenerDatosParalelosAsignatura(int codigoAsignatura) {
+        String salida = "";
+        Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
+        if (asignatura == null) {
+            throw new NullPointerException("La asignatura ingresada no existe.");
+        }
+
+        for (int i = 0; i < asignatura.getListaParalelos().getCantidad(); i++) {
+            Paralelo paralelo = asignatura.getListaParalelos().getParaleloI(i);
+            if (paralelo.getListaEstudiantes().getCantidad() < 100) {
+                salida += paralelo.getNumero() + "\n\n";
             }
         }
 

@@ -92,7 +92,20 @@ public class Main {
             int opcion = input.nextInt();
             switch (opcion) {
                 case 1:
-                    System.out.println(sistema.obtenerDatosAsignaturasInscribiblesEstudiante(correoEstudiante));
+                    String datosAsignaturas = sistema.obtenerDatosAsignaturasInscribiblesEstudiante(correoEstudiante);
+                    if (!datosAsignaturas.equals("")) {
+                        System.out.println(datosAsignaturas);
+                        System.out.print("Escriba el codigo la asignatura: ");
+                        int codigoAsignatura = input.nextInt();
+                        System.out.println();
+                        System.out.println(sistema.obtenerDatosParalelosAsignatura(codigoAsignatura));
+
+                        //sistema.asociarAsignaturaInscritaEstudiante(codigoAsignatura, );
+                    }
+                    else {
+                        System.out.print("Ninguna asignatura disponible.");
+                    }
+
                     break;
 
                 case 2:

@@ -18,12 +18,6 @@ public class Asignatura {
         this.listaParalelos = new ListaParalelos(1000);
     }
 
-    public Asignatura(int codigo) {
-        this.codigo = codigo;
-        this.notaFinal = 0.0;
-        this.listaParalelos = new ListaParalelos(1000);
-    }
-
     public int getCodigo() {
         return codigo;
     }

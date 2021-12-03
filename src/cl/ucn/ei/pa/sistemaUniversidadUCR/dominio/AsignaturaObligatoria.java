@@ -12,10 +12,6 @@ public class AsignaturaObligatoria extends Asignatura {
         this.listaAsignaturasPrerrequisitos = new ListaAsignaturas(1000);
     }
 
-    public AsignaturaObligatoria(int codigo) {
-        super(codigo);
-    }
-
     public int getNivel() {
         return nivel;
     }

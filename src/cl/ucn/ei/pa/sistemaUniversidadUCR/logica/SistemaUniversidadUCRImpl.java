@@ -22,15 +22,29 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
     }
 
     public boolean ingresarAsignaturaCursadaEstudiante(int codigoAsignatura, double nota) {
-        if (listaAsignaturas.buscarAsignatura(codigoAsignatura) == null) {
-            throw new NullPointerException("La asignatura no existe.");
-        }
-
-        AsignaturaObligatoria asignaturaObligatoriaCursada = new AsignaturaObligatoria(codigoAsignatura);
-        asignaturaObligatoriaCursada.setNotaFinal(nota);
+        Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
         int indiceEstudiante = listaUsuarios.getCantidad() - 1;
         Estudiante estudiante = (Estudiante) listaUsuarios.getUsuarioI(indiceEstudiante);
-        return estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignaturaObligatoriaCursada);
+        boolean isAsignaturaAgregada = false;
+        if (asignatura instanceof AsignaturaObligatoria) {
+            AsignaturaObligatoria asignaturaPlantilla = (AsignaturaObligatoria) asignatura;
+            String nombreAsignatura = asignaturaPlantilla.getNombre();
+            int nivel = asignaturaPlantilla.getNivel();
+            int creditos = asignaturaPlantilla.getCreditos();
+            AsignaturaObligatoria asignaturaObligatoriaCursada = new AsignaturaObligatoria(codigoAsignatura, nombreAsignatura, creditos, nivel);
+            asignaturaObligatoriaCursada.setNotaFinal(nota);
+            isAsignaturaAgregada = estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignaturaObligatoriaCursada);
+        }
+        else {
+            AsignaturaOpcional asignaturaPlantilla = (AsignaturaOpcional) asignatura;
+            String nombreAsignatura = asignaturaPlantilla.getNombre();
+            int creditos = asignaturaPlantilla.getCreditos();
+            int creditosPrerrequisitos = asignaturaPlantilla.getCreditosPrerrequisitos();
+            AsignaturaOpcional asignaturaOpcionalCursada = new AsignaturaOpcional(codigoAsignatura, nombreAsignatura, creditos, creditosPrerrequisitos);
+            isAsignaturaAgregada = estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignaturaOpcionalCursada);
+        }
+
+        return isAsignaturaAgregada;
     }
 
     public boolean asociarAsignaturaCursadaEstudiante(int codigoAsignatura, double nota, String correoEstudiante) {
@@ -40,16 +54,28 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
     public boolean ingresarAsignaturaInscritaEstudiante(int codigoAsignatura, int numeroParalelo) {
         Paralelo paralelo = listaParalelos.buscarParalelo(numeroParalelo);
         Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
-        if (paralelo == null || asignatura == null) {
-            throw new NullPointerException("El paralelo y/o la asignatura no existe.");
-        }
-
-        AsignaturaObligatoria asignaturaObligatoriaInscrita = new AsignaturaObligatoria(codigoAsignatura);
         int indiceEstudiante = listaUsuarios.getCantidad() - 1;
         Estudiante estudiante = (Estudiante) listaUsuarios.getUsuarioI(indiceEstudiante);
+        boolean isAsignaturaAgregada = false;
+        if (asignatura instanceof AsignaturaObligatoria) {
+            AsignaturaObligatoria asignaturaPlantilla = (AsignaturaObligatoria) asignatura;
+            String nombreAsignatura = asignaturaPlantilla.getNombre();
+            int nivel = asignaturaPlantilla.getNivel();
+            int creditos = asignaturaPlantilla.getCreditos();
+            AsignaturaObligatoria asignaturaObligatoriaCursada = new AsignaturaObligatoria(codigoAsignatura, nombreAsignatura, creditos, nivel);
+            isAsignaturaAgregada = estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignaturaObligatoriaCursada);
+        }
+        else {
+            AsignaturaOpcional asignaturaPlantilla = (AsignaturaOpcional) asignatura;
+            String nombreAsignatura = asignaturaPlantilla.getNombre();
+            int creditos = asignaturaPlantilla.getCreditos();
+            int creditosPrerrequisitos = asignaturaPlantilla.getCreditosPrerrequisitos();
+            AsignaturaOpcional asignaturaOpcionalCursada = new AsignaturaOpcional(codigoAsignatura, nombreAsignatura, creditos, creditosPrerrequisitos);
+            isAsignaturaAgregada = estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignaturaOpcionalCursada);
+        }
+
         paralelo.getListaEstudiantes().agregarUsuario(estudiante);
-        paralelo.getListaAsignaturas().agregarAsignatura(asignaturaObligatoriaInscrita);
-        return estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaObligatoriaInscrita);
+        return isAsignaturaAgregada;
     }
 
     public boolean asociarAsignaturaInscritaEstudiante(int codigoAsignatura, int numeroParalelo, String correoEstudiante) {
@@ -60,7 +86,11 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             throw new NullPointerException("La asignatura y/o paralelo no existen.");
         }
 
-        AsignaturaObligatoria asignaturaInscrita = new AsignaturaObligatoria(codigoAsignatura);
+        AsignaturaObligatoria asignaturaPlantilla = (AsignaturaObligatoria) asignatura;
+        String nombreAsignatura = asignaturaPlantilla.getNombre();
+        int nivel = asignaturaPlantilla.getNivel();
+        int creditos = asignaturaPlantilla.getCreditos();
+        AsignaturaObligatoria asignaturaInscrita = new AsignaturaObligatoria(codigoAsignatura, nombreAsignatura, creditos, nivel);
         asignaturaInscrita.getListaParalelos().agregarParalelo(paralelo);
 
         return estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaInscrita);
@@ -77,7 +107,11 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
     }
 
     public boolean ingresarAsignaturaPrerrequisito(int codigo) {
-        AsignaturaObligatoria asignaturaPrerrequisito = new AsignaturaObligatoria(codigo);
+        AsignaturaObligatoria asignaturaPlantilla = (AsignaturaObligatoria) listaAsignaturas.buscarAsignatura(codigo);
+        String nombreAsignatura = asignaturaPlantilla.getNombre();
+        int nivel = asignaturaPlantilla.getNivel();
+        int creditos = asignaturaPlantilla.getCreditos();
+        AsignaturaObligatoria asignaturaPrerrequisito = new AsignaturaObligatoria(codigo, nombreAsignatura, creditos, nivel);
         int indiceAsignatura = listaAsignaturas.getCantidad() - 1;
         AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) listaAsignaturas.getAsignaturaI(indiceAsignatura);
         return asignaturaObligatoria.getListaAsignaturasPrerrequisitos().agregarAsignatura(asignaturaPrerrequisito);
@@ -92,13 +126,9 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         Paralelo paralelo = new Paralelo(numeroParalelo);
         Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
         Profesor profesor = (Profesor) listaUsuarios.buscarUsuarioPorRut(rutProfesor);
-        if (asignatura == null  || profesor == null) {
-            throw new NullPointerException("Asignatura y/o Profesor no existe.");
-        }
-
         asignatura.getListaParalelos().agregarParalelo(paralelo);
         paralelo.setProfesor(profesor);
-        paralelo.getListaAsignaturas().agregarAsignatura(asignatura);
+        profesor.getListaParalelos().agregarParalelo(paralelo);
         return listaParalelos.agregarParalelo(paralelo);
     }
 
@@ -190,10 +220,9 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         ListaAsignaturas listaAsignaturasInscritas = estudiante.getListaAsignaturasInscritas();
         for (int i = 0; i < listaAsignaturasInscritas.getCantidad(); i++) {
             Asignatura asignatura = listaAsignaturasInscritas.getAsignaturaI(i);
-            Asignatura asignaturaDescripcion = listaAsignaturas.buscarAsignatura(asignatura.getCodigo());
-            salida += asignaturaDescripcion.getCodigo()
+            salida += asignatura.getCodigo()
                     + "\n"
-                    + asignaturaDescripcion.getNombre()
+                    + asignatura.getNombre()
                     +"\n\n";
         }
 
@@ -203,5 +232,34 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
     public boolean eliminarAsignaturaInscritaEstudiante(String correoEstudiante, int codigoAsignatura) {
         Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
         return estudiante.getListaAsignaturasInscritas().eliminarAsignatura(codigoAsignatura);
+    }
+
+    public String obtenerParalelosProfesor(String correoProfesor) {
+        String salida = "";
+        Profesor profesor = (Profesor) listaUsuarios.buscarUsuarioPorCorreo(correoProfesor);
+        ListaParalelos listaParalelos = profesor.getListaParalelos();
+        for (int i = 0; i < listaParalelos.getCantidad(); i++) {
+            Paralelo paralelo = listaParalelos.getParaleloI(i);
+            salida += paralelo.getNumero() + "\n";
+        }
+
+        return salida;
+    }
+
+
+    public String obtenerEstudiantesParaleloProfesor(String correoProfesor, int numeroParalelo) {
+        String salida = "";
+        Profesor profesor = (Profesor) listaUsuarios.buscarUsuarioPorCorreo(correoProfesor);
+        Paralelo paralelo = profesor.getListaParalelos().buscarParalelo(numeroParalelo);
+        if (paralelo == null) {
+            throw new NullPointerException("Que el paralelo no existe");
+        }
+
+        ListaUsuarios listaEstudiantes = paralelo.getListaEstudiantes();
+        for (int i = 0; i < listaEstudiantes.getCantidad(); i++) {
+            salida += listaEstudiantes.getUsuarioI(i).getCorreo() + "\n";
+        }
+
+        return salida;
     }
 }

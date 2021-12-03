@@ -66,6 +66,11 @@ public interface SistemaUniversidadUCR {
      */
     boolean ingresarAsignaturaOpcional(int codigoAsignatura, String nombreAsignatura, int creditos, int creditosPrerrequisitos);
 
+    /**
+     * Se ingresa una asignatura prerrequisito a la lista de asignaturas prerrequisitos de la asignatura.
+     * @param codigo Codigo de la asignatura prerrequisito
+     * @return boolean
+     */
     boolean ingresarAsignaturaPrerrequisito(int codigo);
 
     boolean ingresarProfesor(String rut, String correo, String contrasena, int salario);
@@ -97,4 +102,8 @@ public interface SistemaUniversidadUCR {
     String obtenerDatosAsignaturasInscritasEstudiante(String correoEstudiante);
 
     boolean eliminarAsignaturaInscritaEstudiante(String correoEstudiante, int codigoAsignatura);
+
+    String obtenerParalelosProfesor(String correoProfesor);
+
+    String obtenerEstudiantesParaleloProfesor(String correoProfesor, int numeroParalelo);
 }

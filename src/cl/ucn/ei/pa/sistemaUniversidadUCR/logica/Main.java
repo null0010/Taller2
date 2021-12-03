@@ -16,7 +16,6 @@ public class Main {
     }
 
 
-
     private static void ejecutandoAplicacion(SistemaUniversidadUCR sistema, Scanner input) {
         boolean isEjecutandoAplicacion = true;
         boolean isCredencialesCorrectas = false;
@@ -29,24 +28,20 @@ public class Main {
             if (sistema.isUsuarioAdministrador(correo, contrasena)) {
                 ejecutarMenuAdmin(sistema, input);
                 isEjecutandoAplicacion = false;
-            }
-            else {
+            } else {
                 if (sistema.isUsuarioRegistrado(correo)) {
                     if (sistema.isContraseñaCorrecta(correo, contrasena)) {
                         if (sistema.isUsuarioProfesor(correo)) {
-                            ejecutarMenuProfesor(sistema, input);
-                        }
-                        else {
+                          //  ejecutarMenuProfesor(sistema, input);
+                        } else {
                             ejecutarMenuEstudiante(sistema, input, correo);
                         }
 
                         isEjecutandoAplicacion = false;
-                    }
-                    else {
+                    } else {
                         System.out.println("Correo y/o contraseña incorrectos.");
                     }
-                }
-                else {
+                } else {
                     System.out.println("Correo y/o contraseña incorrectos.");
                 }
             }
@@ -58,7 +53,7 @@ public class Main {
         }
     }
 
-    private static void ejecutarMenuProfesor(SistemaUniversidadUCR sistema, Scanner input) {
+    private static void ejecutarMenuProfesor(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
         System.out.print("Ingrese una fecha [00/00/0000]: ");
         String fecha = obtenerFechaFormateada(input.next());
         while (fecha.equals("")) {
@@ -68,13 +63,67 @@ public class Main {
         }
 
         if (sistema.isInicioSemestre(fecha)) {
+            ejecutarOpcionesInicioSemestreProfesor(sistema, input, correoProfesor);
+        } else if (sistema.isMitadSemestre(fecha)) {
+            System.out.println("No hay acciones disponibles para este periodo");
+        } else if (sistema.isFinalSemestre(fecha)) {
+            ejecutarIngresoDeNotasProfesor(sistema, input, correoProfesor);
 
+        } else if (sistema.isVacaciones(fecha)) {
+            System.out.println("Disfrute sus vacaciones");
+        } else {
+            System.out.println("No hay acciones disponibles.");
         }
+    }
 
+    private static void ejecutarOpcionesInicioSemestreProfesor(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
+        boolean isCerrarSistema = false;
+        while (!isCerrarSistema) {
+            System.out.println("[1] Chequear paralelos");
+            System.out.println("[2] Cerrar sistema");
+            System.out.print("Ingrese una opcion: ");
+            int opcion = input.nextInt();
+            switch (opcion) {
+                case 1:
+                    ejecutarChequeoDeAlumnos(sistema, input, correoProfesor);
+                    break;
+
+                case 2:
+                    isCerrarSistema = true;
+                    break;
+
+                default:
+                    System.out.println("Opcion fuera de rango.");
+                    break;
+            }
+        }
+    }
+
+    private static void ejecutarChequeoDeAlumnos(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
+        System.out.println(sistema.obtenerParalelosProfesor(correoProfesor));
+        System.out.print("Ingrese el paralelo que desea chequear");
+        int numeroParalelo = input.nextInt();
+        String datosEstudiantes = sistema.obtenerEstudiantesParaleloProfesor(correoProfesor, numeroParalelo);
+        if (!datosEstudiantes.equals("")) {
+            System.out.println(datosEstudiantes);
+        }
+        else {
+            System.out.println("No se encuentra ningún estudiante inscrito.");
+        }
+    }
+
+    private static void ejecutarIngresoDeNotasProfesor(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
+        //sistema.obtenerAsignaturasProfesor(correoProfesor);
+        System.out.print("Ingrese el codigo de la asignatura");
+        int codigoAsignatura = input.nextInt();
+        //sistema.obtenerAlumnosAsignatura();
+        System.out.print("Ingrese el nombre del alumno");
+        String nombreAlumno = input.next();
+        //sistema.asignarNotaFinalAlumno(codigoAsignatura, nombreAlumno);
     }
 
     private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
-        System.out.print("Ingrese una fecha [00/00/0000]: ");
+        System.out.print("Ingrese una fecha (00/00/0000): ");
         String fecha = obtenerFechaFormateada(input.next());
         while (fecha.equals("")) {
             System.out.println("Formato incorrecto!!");
@@ -201,7 +250,7 @@ public class Main {
     }
 
     private static void ejecutarMenuAdmin(SistemaUniversidadUCR sistema, Scanner input) {
-        System.out.print("Ingrese una fecha [00/00/0000]: ");
+        System.out.print("Ingrese una fecha (00/00/0000): ");
         String fecha = obtenerFechaFormateada(input.next());
         while (fecha.equals("")) {
             System.out.println("Formato incorrecto!!");
@@ -341,7 +390,7 @@ public class Main {
 
     public static String obtenerFechaFormateada(String fecha) {
         String fechaFormateada = "";
-        Pattern DATE_PATTERN = Pattern.compile("(?<day>\\d{2})/(?<month>\\d{2})/(?<year>\\d{4})");
+        Pattern DATE_PATTERN = Pattern.compile("(?<day>\\d{2})/(?<month>\\d{2})/(?<year>\\d{4})");//
         Matcher matcherDate = DATE_PATTERN.matcher(fecha);
         if (matcherDate.matches()) {
             fechaFormateada = matcherDate.group(3) + "-" + matcherDate.group(2) + "-" + matcherDate.group(1);

@@ -228,7 +228,7 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
                 AsignaturaOpcional asignaturaOpcional = (AsignaturaOpcional) asignatura;
                 if (estudiante.getCredito() >= asignaturaOpcional.getCreditosPrerrequisitos() && estudiante.getCredito() >= asignaturaOpcional.getCreditos()) {
                     salida += "Opcional\n"
-                            + asignaturaOpcional.getCreditos()
+                            + asignaturaOpcional.getCodigo()
                             + "\n"
                             + asignaturaOpcional.getNombre()
                             + "\n\n";

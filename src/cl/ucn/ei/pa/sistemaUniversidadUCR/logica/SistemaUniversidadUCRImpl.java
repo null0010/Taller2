@@ -64,6 +64,7 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             int creditos = asignaturaPlantilla.getCreditos();
             AsignaturaObligatoria asignaturaObligatoriaInscritas = new AsignaturaObligatoria(codigoAsignatura, nombreAsignatura, creditos, nivel);
             asignaturaObligatoriaInscritas.getListaParalelos().agregarParalelo(paralelo);
+            estudiante.setCredito(estudiante.getCredito() - asignaturaPlantilla.getCreditos());
             isAsignaturaAgregada = estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaObligatoriaInscritas);
         }
         else {
@@ -73,6 +74,7 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             int creditosPrerrequisitos = asignaturaPlantilla.getCreditosPrerrequisitos();
             AsignaturaOpcional asignaturaOpcionalInscritas = new AsignaturaOpcional(codigoAsignatura, nombreAsignatura, creditos, creditosPrerrequisitos);
             asignaturaOpcionalInscritas.setParalelo(paralelo);
+            estudiante.setCredito(estudiante.getCredito() - asignaturaPlantilla.getCreditos());
             isAsignaturaAgregada = estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaOpcionalInscritas);
         }
 
@@ -96,6 +98,7 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             int creditos = asignaturaPlantilla.getCreditos();
             AsignaturaObligatoria asignaturaObligatoria = new AsignaturaObligatoria(codigoAsignatura, nombreAsignatura, creditos, nivel);
             asignaturaObligatoria.getListaParalelos().agregarParalelo(paralelo);
+            estudiante.setCredito(estudiante.getCredito() - asignaturaPlantilla.getCreditos());
             isAsignaturaAgregada = estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaObligatoria);
         }
         else {
@@ -105,6 +108,7 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             int creditosPrerrequisitos = asignaturaPlantilla.getCreditosPrerrequisitos();
             AsignaturaOpcional asignaturaOpcional = new AsignaturaOpcional(codigoAsignatura, nombreAsignatura, creditos, creditosPrerrequisitos);
             asignaturaOpcional.setParalelo(paralelo);
+            estudiante.setCredito(estudiante.getCredito() - asignaturaPlantilla.getCreditos());
             isAsignaturaAgregada = estudiante.getListaAsignaturasInscritas().agregarAsignatura(asignaturaOpcional);
         }
 
@@ -213,10 +217,21 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
             if (asignatura instanceof AsignaturaObligatoria) {
                 AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
                 if (estudiante.getNivel() <= asignaturaObligatoria.getNivel() && estudiante.getCredito() >= asignaturaObligatoria.getCreditos()) {
-                    salida += asignaturaObligatoria.getCodigo()
+                    salida += "Obligatoria\n"
+                            + asignaturaObligatoria.getCodigo()
                             + "\n"
                             + asignaturaObligatoria.getNombre()
                             +"\n\n";
+                }
+            }
+            else {
+                AsignaturaOpcional asignaturaOpcional = (AsignaturaOpcional) asignatura;
+                if (estudiante.getCredito() >= asignaturaOpcional.getCreditosPrerrequisitos() && estudiante.getCredito() >= asignaturaOpcional.getCreditos()) {
+                    salida += "Opcional\n"
+                            + asignaturaOpcional.getCreditos()
+                            + "\n"
+                            + asignaturaOpcional.getNombre()
+                            + "\n\n";
                 }
             }
         }
@@ -227,9 +242,6 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
     public String obtenerDatosParalelosAsignatura(int codigoAsignatura) {
         String salida = "";
         Asignatura asignatura = listaAsignaturas.buscarAsignatura(codigoAsignatura);
-        if (asignatura == null) {
-            throw new NullPointerException("La asignatura ingresada no existe.");
-        }
 
         if (asignatura instanceof AsignaturaObligatoria) {
             AsignaturaObligatoria asignaturaObligatoria = (AsignaturaObligatoria) asignatura;
@@ -338,8 +350,24 @@ public class SistemaUniversidadUCRImpl implements SistemaUniversidadUCR {
         }
 
         asignatura.setNotaFinal(notaFinal);
+        estudiante.getListaAsignaturasCursadas().agregarAsignatura(asignatura);
     }
 
+    public boolean isSubirNivelEstudiante(String correoEstudiante) {
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        boolean isTodasAsignaturasPasadasNivel = true;
+        for (int i = 0; i < listaAsignaturas.getCantidad() && isTodasAsignaturasPasadasNivel; i++) {
+            int codigoAsignatura = listaAsignaturas.getAsignaturaI(i).getCodigo();
+            isTodasAsignaturasPasadasNivel = estudiante.getListaAsignaturasCursadas().buscarAsignatura(codigoAsignatura) != null;
+        }
+
+        return isTodasAsignaturasPasadasNivel;
+    }
+
+    public void subirNivelEstudiante(String correoEstudiante) {
+        Estudiante estudiante = (Estudiante) listaUsuarios.buscarUsuarioPorCorreo(correoEstudiante);
+        estudiante.setNivel(estudiante.getNivel() + 1);
+    }
 
     public String obtenerDatosEstudiantes() {
         String salida = "";

@@ -1,4 +1,4 @@
-11.111.111-1, Jorge.perez@alumnos.ucn.cl,3, Abc_123
+11.111.111-1, Jorge.perez@alumnos.ucn.cl, 3, Abc_123
 6
 1458,3.2
 1085,4.8

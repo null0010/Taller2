@@ -209,8 +209,23 @@ public interface SistemaUniversidadUCR {
     void ingresarNotaFinalAlumno(String correoEstudiante, int codigoAsignatura, double notaFinal);
 
     /**
+     * Se encarga de comprobar si es momento de subir el nivel del estudiante.
+     * @param correoEstudiante
+     * @return boolean
+     */
+    boolean isSubirNivelEstudiante(String correoEstudiante);
+
+    /**
+     * Se encarga de subir el nivel del estudiante.
+     * @param correoEstudiante
+     */
+    void subirNivelEstudiante(String correoEstudiante);
+
+    /**
      * Se obtienen los datos de cada uno de los estudiantes.
      * @return String
      */
     String obtenerDatosEstudiantes();
+
+
 }

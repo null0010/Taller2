@@ -132,6 +132,9 @@ public class Main {
             System.out.print("Ingrese la nota: ");
             double notaFinal = input.nextDouble();
             sistema.ingresarNotaFinalAlumno(correoEstudiante, codigoAsignatura, notaFinal);
+            if (sistema.isSubirNivelEstudiante(correoEstudiante)) {
+                sistema.subirNivelEstudiante(correoEstudiante);
+            }
         }
         else {
             System.out.println("No se encuentre ningún alumno inscrito aún.");

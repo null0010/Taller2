@@ -2,6 +2,7 @@ package cl.ucn.ei.pa.sistemaUniversidadUCR.logica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ public class Main {
         SistemaUniversidadUCR sistema = new SistemaUniversidadUCRImpl();
         cargarArchivos(sistema);
         ejecutandoAplicacion(sistema, input);
+        sobrescribirArchivoEstudiantes(sistema);
         input.close();
     }
 
@@ -30,9 +32,9 @@ public class Main {
                 isEjecutandoAplicacion = false;
             } else {
                 if (sistema.isUsuarioRegistrado(correo)) {
-                    if (sistema.isContraseñaCorrecta(correo, contrasena)) {
+                    if (sistema.isContrasenaCorrecta(correo, contrasena)) {
                         if (sistema.isUsuarioProfesor(correo)) {
-                          //  ejecutarMenuProfesor(sistema, input);
+                          ejecutarMenuProfesor(sistema, input, correo);
                         } else {
                             ejecutarMenuEstudiante(sistema, input, correo);
                         }
@@ -101,7 +103,7 @@ public class Main {
 
     private static void ejecutarChequeoDeAlumnos(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
         System.out.println(sistema.obtenerParalelosProfesor(correoProfesor));
-        System.out.print("Ingrese el paralelo que desea chequear");
+        System.out.print("Ingrese el paralelo que desea chequear: ");
         int numeroParalelo = input.nextInt();
         String datosEstudiantes = sistema.obtenerEstudiantesParaleloProfesor(correoProfesor, numeroParalelo);
         if (!datosEstudiantes.equals("")) {
@@ -110,16 +112,30 @@ public class Main {
         else {
             System.out.println("No se encuentra ningún estudiante inscrito.");
         }
+        System.out.println();
     }
 
     private static void ejecutarIngresoDeNotasProfesor(SistemaUniversidadUCR sistema, Scanner input, String correoProfesor) {
-        //sistema.obtenerAsignaturasProfesor(correoProfesor);
+        System.out.println(sistema.obtenerAsignaturasProfesor(correoProfesor));
         System.out.print("Ingrese el codigo de la asignatura");
         int codigoAsignatura = input.nextInt();
-        //sistema.obtenerAlumnosAsignatura();
-        System.out.print("Ingrese el nombre del alumno");
-        String nombreAlumno = input.next();
-        //sistema.asignarNotaFinalAlumno(codigoAsignatura, nombreAlumno);
+        String datosAlumnos = sistema.obtenerEstudiantesAsignatura(correoProfesor, codigoAsignatura);
+        if (!datosAlumnos.equals("")) {
+            System.out.print("Ingrese el correo del estudiante: ");
+            String correoEstudiante = input.next();
+            while (!sistema.isUsuarioRegistrado(correoEstudiante)) {
+                System.out.println("Ese correo no existe, intentelo nuevamente.");
+                System.out.print("Ingrese el correo del estudiante: ");
+                correoEstudiante = input.next();
+            }
+
+            System.out.print("Ingrese la nota: ");
+            double notaFinal = input.nextDouble();
+            sistema.ingresarNotaFinalAlumno(correoEstudiante, codigoAsignatura, notaFinal);
+        }
+        else {
+            System.out.println("No se encuentre ningún alumno inscrito aún.");
+        }
     }
 
     private static void ejecutarMenuEstudiante(SistemaUniversidadUCR sistema, Scanner input, String correoEstudiante) {
@@ -385,7 +401,12 @@ public class Main {
     }
 
     public static void sobrescribirArchivoEstudiantes(SistemaUniversidadUCR sistemaUniversidadUCR) {
-
+        try (FileWriter fileWriter = new FileWriter("archivos/estudiantes.txt")) {
+            fileWriter.write(sistemaUniversidadUCR.obtenerDatosEstudiantes());
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public static String obtenerFechaFormateada(String fecha) {

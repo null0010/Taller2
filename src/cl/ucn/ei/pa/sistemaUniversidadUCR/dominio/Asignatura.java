@@ -1,21 +1,19 @@
 package cl.ucn.ei.pa.sistemaUniversidadUCR.dominio;
 
-import cl.ucn.ei.pa.sistemaUniversidadUCR.logica.ListaParalelos;
+import cl.ucn.ei.pa.sistemaUniversidadUCR.logica.ListaUsuarios;
 
 public class Asignatura {
     private int codigo;
     private String nombre;
     private int creditos;
     private double notaFinal;
-    //private ListaUsuarios listaEstudiantes;
-    private ListaParalelos listaParalelos;
-
+    private ListaUsuarios listaEstudiantes;
     public Asignatura(int codigo, String nombre, int creditos) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.creditos = creditos;
         this.notaFinal = 0.0;
-        this.listaParalelos = new ListaParalelos(1000);
+        this.listaEstudiantes = new ListaUsuarios(1000);
     }
 
     public int getCodigo() {
@@ -50,11 +48,11 @@ public class Asignatura {
         this.notaFinal = notaFinal;
     }
 
-    public ListaParalelos getListaParalelos() {
-        return listaParalelos;
+    public ListaUsuarios getListaEstudiantes() {
+        return listaEstudiantes;
     }
 
-    public void setListaParalelos(ListaParalelos listaParalelos) {
-        this.listaParalelos = listaParalelos;
+    public void setListaEstudiantes(ListaUsuarios listaEstudiantes) {
+        this.listaEstudiantes = listaEstudiantes;
     }
 }
